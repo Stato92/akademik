@@ -6,10 +6,18 @@
       "description": "Łączna liczba miejsc noclegowych wynosi 596. Pokoje dwuosobowe, połączone po 2 w tzw. boksy ze wspólnym węzłem sanitarnym, wyposażone w łącze internetowe.",
       "address": "ul. Chopina 55\r\n71-450 Szczecin",
       "capacity": "596",
-      "img": "",
+      "img": "https://szczecin.fotopolska.eu/426/426329/1091/Szczecin_Akademik_ZUT_Amicus.jpg?m=1372715680",
       "administrator": "mgr Teresa Towarnicka",
       "phone": "914496485",
       "email": "amicus@zut.edu.pl"
+    },
+    {
+      "id": "2",
+      "name": "Dom Studencki ARKONA"
+    },
+    {
+      "id": "3",
+      "name": "Dom Studencki ANDROMEDA"
     }
   ],
   "floor": [

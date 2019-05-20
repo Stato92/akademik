@@ -1,21 +1,41 @@
 <template>
     <div id="dorm-floor">
-        <label class="m-2" for="select-floor"><h3>Wybierz Akademik:</h3></label>
-        <select class="ml-2 col-2 form-control form-control-sm" id="select-dorm" v-model="currentDorm">
-            <option v-for="dorm in Db.dorm" v-bind:value="dorm.id">
-                {{ dorm.name }}
-            </option>
-        </select>
-        <div v-if="currentDorm!=null">
-            <label class="m-2" for="select-floor"><h3>Wybierz piętro:</h3></label>
-            <select class="ml-2 col-2 form-control form-control-sm" id="select-floor" v-model="currentFloor">
-                <option v-for="floor in Db.floor" v-bind:value="floor.id"><span
+        <div v-if="currentDorm==null">
+            <label class="m-2" for="select-floor"><h4>Wybierz Akademik:</h4></label>
+            <select class="col-2 form-control form-control-sm" id="select-dorm" v-model="currentDorm">
+                <option v-bind:value="dorm" v-for="dorm in Db.dorm">
+                    {{ dorm.name }}
+                </option>
+            </select>
+        </div>
+        <div v-else>
+            <h3><a href="" title="Pokaż więcej informacji" v-on:click.prevent="showDormInfo=!showDormInfo">{{
+                currentDorm.name }} </a>
+                <small><a href="" v-on:click.prevent="currentDorm=null">(zmień)</a></small>
+            </h3>
+            <a href="" title="Pokaż więcej informacji" v-on:click.prevent="showDormInfo=!showDormInfo">
+                <p>
+                    <button class="btn btn-primary btn-sm" v-if="!showDormInfo">Więcej informacji...</button>
+                    <button class="btn btn-primary btn-sm" v-else>Mniej informacji</button>
+                </p>
+            </a>
+            <ul class="text-left" v-if="showDormInfo">
+                <li>adres: {{ currentDorm.address }}</li>
+                <li>opis: {{ currentDorm.description }}</li>
+                <li>email: <a v-bind:href="'mailto:'+currentDorm.email">{{ currentDorm.email }}</a></li>
+                <li>telefon: {{ currentDorm.phone }}</li>
+                <img class="align-self-center" v-bind:src="currentDorm.img" width="600px">
+            </ul>
+            <label for="select-floor"><h4>Wybierz piętro:</h4></label>
+            <select class="align-self-center col-2 form-control form-control-sm" id="select-floor"
+                    v-model="currentFloor">
+                <option v-bind:value="floor.id" v-for="floor in Db.floor"><span
                         v-if="floor.number == 0">parter</span><span v-else>{{ floor.number }}</span></option>
             </select>
             <div id="dorm-floor-image">
                 <div id="rooms">
                     <template v-for="(room, index) in getRooms()">
-                        <a v-on:click.prevent="showRoomDetails(room)" href="">
+                        <a href="" v-on:click.prevent="showRoomDetails(room)">
                             <div class="room"
                                  v-bind:class="{'room-top': index<11, 'room-bottom': index>=11, 'room-free': checkRoomStatus(room), 'room-occupied': !checkRoomStatus(room)}"
                                  v-bind:id="'room'+(index+1)"><p class="room-number">{{ room.number }}</p></div>
@@ -23,7 +43,7 @@
                     </template>
                 </div>
                 <div id="room-details" v-if="roomDetails!==null">
-                    <a v-on:click.prevent="roomDetails=null" href="" id="room-details-cross"><b>X</b></a>
+                    <a href="" id="room-details-cross" v-on:click.prevent="roomDetails=null"><b>X</b></a>
                     <h3>Informacje o pokoju nr {{ currentRoom }}:</h3>
                     <ul v-if="roomDetails!=='Kuchnia'">
                         <li>Pojemność: {{ roomDetails.capacity }} os.</li>
@@ -35,7 +55,7 @@
                     </ul>
                     <h4 v-else>Kuchnia</h4>
                 </div>
-                <img src="../assets/floor.jpg" id="dorm-floor-img"/>
+                <img id="dorm-floor-img" src="../assets/floor.jpg"/>
             </div>
         </div>
     </div>
@@ -73,7 +93,8 @@
         data() {
             return {
                 Db,
-                currentDorm: 1,
+                currentDorm: null,
+                showDormInfo: false,
                 currentFloor: 1,
                 currentRoom: null,
                 roomDetails: null
@@ -91,13 +112,17 @@
     #dorm-floor {
         border: 1px solid black;
         width: 1280px;
-        height: 700px;
+        margin: 10px auto;
+        text-align: center;
+        padding-bottom: 20px;
+    }
+
+    select {
         margin: 0 auto;
     }
 
     #dorm-floor-image {
         margin-top: 40px;
-        margin-left: 40px;
         text-align: center;
         position: relative;
     }
@@ -105,7 +130,7 @@
     #rooms {
         position: absolute;
         top: 18px;
-        left: 39px;
+        left: 59px;
         width: 1163px;
         height: 293px;
     }
@@ -115,7 +140,7 @@
         height: 250px;
         border: 1px solid black;
         position: absolute;
-        left: 350px;
+        left: 390px;
         top: 40px;
         z-index: 3;
         background: rgba(00, 00, 00, 0.8);
