@@ -1,16 +1,18 @@
 <template>
   <div id="app">
-    <Dorm/>
+    <router-view/>
   </div>
 </template>
 
 <script>
-  import Dorm from './components/Dorm.vue'
+  import Dorm from './components/Dorm'
+  import Reserve from './components/Reserve'
 export default {
   name: 'app',
-  components: {
-    Dorm
-  }
+  components: [
+    Dorm,
+    Reserve
+  ]
 }
 </script>
 

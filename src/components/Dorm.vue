@@ -47,11 +47,14 @@
                     <h3>Informacje o pokoju nr {{ currentRoom }}:</h3>
                     <ul v-if="roomDetails!=='Kuchnia'">
                         <li>Pojemność: {{ roomDetails.capacity }} os.</li>
-                        <li>Status: <b>{{ roomDetails.status=="1" ? 'ZAJĘTY' : 'WOLNY' }}</b></li>
                         <li>Lodówka: {{ roomDetails.fridge=="1" ? 'JEST' : 'BRAK' }}</li>
                         <li>Wspólna łazienka: {{ roomDetails.shared_bathroom ? 'TAK' : 'NIE' }}</li>
                         <li>Wspólna kuchnia: {{ roomDetails.status ? 'TAK' : 'NIE' }}</li>
                         <li><b>Cena: {{ roomDetails.capacity == "2" ? '555' : '735' }} zł / miesiąc</b></li>
+                        <a :aria-disabled="{'true': roomDetails.status==1}" class="btn mt-2" href="#"
+                           role="button"
+                           v-bind:class="{'btn-success':roomDetails.status==0, 'btn-danger disabled':roomDetails.status==1 }">{{
+                            roomDetails.status=="1" ? 'Zarezerwowany' : 'Rezerwuj' }}</a>
                     </ul>
                     <h4 v-else>Kuchnia</h4>
                 </div>
