@@ -3,7 +3,7 @@
         <div v-if="currentDorm==null">
             <label class="m-2" for="select-floor"><h4>Wybierz Akademik:</h4></label>
             <select class="col-2 form-control form-control-sm" id="select-dorm" v-model="currentDorm">
-                <option v-bind:value="dorm" v-for="dorm in Db.dorm">
+                <option :key="dorm.id" v-bind:value="dorm" v-for="dorm in Db.dorm">
                     {{ dorm.name }}
                 </option>
             </select>
@@ -29,13 +29,13 @@
             <label for="select-floor"><h4>Wybierz piętro:</h4></label>
             <select class="align-self-center col-2 form-control form-control-sm" id="select-floor"
                     v-model="currentFloor">
-                <option v-bind:value="floor.id" v-for="floor in Db.floor"><span
+                <option :key="floor.id" v-bind:value="floor.id" v-for="floor in Db.floor"><span
                         v-if="floor.number == 0">parter</span><span v-else>{{ floor.number }}</span></option>
             </select>
             <div id="dorm-floor-image">
                 <div id="rooms">
                     <template v-for="(room, index) in getRooms()">
-                        <a href="" v-on:click.prevent="showRoomDetails(room)">
+                        <a :key="room.id" href="" v-on:click.prevent="showRoomDetails(room)">
                             <div class="room"
                                  v-bind:class="{'room-top': index<11, 'room-bottom': index>=11, 'room-free': checkRoomStatus(room), 'room-occupied': !checkRoomStatus(room)}"
                                  v-bind:id="'room'+(index+1)"><p class="room-number">{{ room.number }}</p></div>
@@ -45,18 +45,24 @@
                 <div id="room-details" v-if="roomDetails!==null">
                     <a href="" id="room-details-cross" v-on:click.prevent="roomDetails=null"><b>X</b></a>
                     <h3>Informacje o pokoju nr {{ currentRoom }}:</h3>
-                    <ul v-if="roomDetails!=='Kuchnia'">
-                        <li>Pojemność: {{ roomDetails.capacity }} os.</li>
-                        <li>Lodówka: {{ roomDetails.fridge=="1" ? 'JEST' : 'BRAK' }}</li>
-                        <li>Wspólna łazienka: {{ roomDetails.shared_bathroom ? 'TAK' : 'NIE' }}</li>
-                        <li>Wspólna kuchnia: {{ roomDetails.status ? 'TAK' : 'NIE' }}</li>
-                        <li><b>Cena: {{ roomDetails.capacity == "2" ? '555' : '735' }} zł / miesiąc</b></li>
-                        <a :aria-disabled="{'true': roomDetails.status==1}" class="btn mt-2" href="#"
-                           role="button"
-                           v-bind:class="{'btn-success':roomDetails.status==0, 'btn-danger disabled':roomDetails.status==1 }">{{
-                            roomDetails.status=="1" ? 'Zarezerwowany' : 'Rezerwuj' }}</a>
-                    </ul>
-                    <h4 v-else>Kuchnia</h4>
+                    <div v-if="roomDetails!=='Kuchnia'">
+                        <ul>
+                            <li>Pojemność: {{ roomDetails.capacity }} os.</li>
+                            <li>Lodówka: {{ roomDetails.fridge=="1" ? 'JEST' : 'BRAK' }}</li>
+                            <li>Wspólna łazienka: {{ roomDetails.shared_bathroom ? 'TAK' : 'NIE' }}</li>
+                            <li>Wspólna kuchnia: {{ roomDetails.status ? 'TAK' : 'NIE' }}</li>
+                            <li><b>Cena: {{ roomDetails.capacity == "2" ? '555' : '735' }} zł / miesiąc</b></li>
+                        </ul>
+                        <router-link v-bind:to="'/rezerwacja/'+currentRoom"><a
+                                :aria-disabled="{'true': roomDetails.status==1}" class="btn mt-2" href="#"
+                                role="button"
+                                v-bind:class="{'btn-success':roomDetails.status==0, 'btn-danger disabled':roomDetails.status==1 }">
+                            {{ roomDetails.status=="1" ? 'Zarezerwowany' : 'Rezerwuj' }}</a>
+                        </router-link>
+                    </div>
+                    <div v-else>
+                        <h4>Kuchnia</h4>
+                    </div>
                 </div>
                 <img id="dorm-floor-img" src="../assets/floor.jpg"/>
             </div>
