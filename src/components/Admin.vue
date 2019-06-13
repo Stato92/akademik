@@ -20,10 +20,10 @@
                         v-if="floor.number == 0">parter</span><span v-else>{{ floor.number }}</span></option>
             </select>
             <template v-if="rooms !== null">
-                <div class="custom-control custom-switch" v-for="room in this.rooms">
-                    <input class="custom-control-input" id="customSwitch1" type="checkbox"
-                           v-bind:value="room.roomDetails.status">
-                    <label class="custom-control-label" for="customSwitch1">{{ room.number }}</label>
+                <div class="custom-control custom-switch" v-for="(room, index) in this.rooms">
+                    <input :id="'room-switch'+index" class="custom-control-input" type="checkbox"
+                           v-model="room.roomDetails.status">
+                    <label :for="'room-switch'+index" class="custom-control-label">{{ room.number }}</label>
                 </div>
             </template>
         </div>
@@ -47,11 +47,16 @@
         watch: {
             currentFloor() {
                 this.getRooms();
+            },
+            rooms() {
+                this.rooms.forEach(room => {
+                    Db.room_details.room
+                })
             }
         },
         methods: {
             getRooms() {
-                this.rooms = this.Db.room.filter(room => room.floor_id === this.currentFloor);
+                this.rooms = this.Db.room.filter(room => room.floor_id === this.currentFloor && room.type === 0);
                 this.rooms.forEach(room => {
                     room.roomDetails = this.Db.room_details.filter(room_details => room_details.room_id === room.id)[0]
                 });

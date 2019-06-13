@@ -51,13 +51,14 @@
                                 <li>Pojemność: {{ roomDetails.capacity }} os.</li>
                                 <li>Lodówka: {{ roomDetails.fridge=="1" ? 'JEST' : 'BRAK' }}</li>
                                 <li>Wspólna łazienka: {{ roomDetails.shared_bathroom ? 'TAK' : 'NIE' }}</li>
-                                <li>Wspólna kuchnia: {{ roomDetails.status ? 'TAK' : 'NIE' }}</li>
+                                <li>Wspólna kuchnia: {{ roomDetails.shared_kitchen ? 'TAK' : 'NIE' }}</li>
                                 <li><b>Cena: {{ roomDetails.capacity == "2" ? '555' : '735' }} zł / miesiąc</b></li>
                             </ul>
-                            <router-link :aria-disabled="{'true': roomDetails.status==1}" class="btn mt-2" role="button"
-                                         v-bind:class="{'btn-success':roomDetails.status==0, 'btn-danger disabled':roomDetails.status==1 }"
+                            <router-link :aria-disabled="{'true': roomDetails.status==false}" class="btn mt-2"
+                                         role="button"
+                                         v-bind:class="{'btn-success':roomDetails.status==true, 'btn-danger disabled':roomDetails.status==false }"
                                          v-bind:to="'/rezerwacja/'+currentDorm.name+'/'+currentRoom">
-                                {{ roomDetails.status=="1" ? 'Zarezerwowany' : 'Rezerwuj' }}
+                                {{ roomDetails.status==true ? 'Rezerwuj' : 'Zarezerwowany' }}
                             </router-link>
                         </div>
                         <div v-else>
@@ -92,7 +93,7 @@
             checkRoomStatus(room) {
                 let room_details = this.Db.room_details.filter(room_details => room_details.room_id === room.id);
                 if (room_details.length !== 0) {
-                    return room_details[0].status == 0;
+                    return room_details[0].status == true;
                 } else {
                     return false;
                 }
