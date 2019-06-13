@@ -1,7 +1,11 @@
 <template>
     <b-container>
-        <h1 class="text-center">Formularz rezerwacji pokoju</h1>
-        <h3 class="text-center">Dokonujesz rezerwacji pokoju numer: {{room}}</h3>
+        <div class="mt-2" v-if="this.response!=null">
+            <span v-html="this.response.message"></span>
+        </div>
+        <h2 class="text-center">Formularz rezerwacji pokoju w akademiku</h2>
+        <h2 class="text-center"><b>"{{dormName}}"</b></h2>
+        <h3 class="text-center">Dokonujesz rezerwacji pokoju numer: <b>{{roomNumber}}</b></h3>
         <b-form @submit="onSubmit">
             <b-form-group id="form-input-group-1" label="Imię" label-for="form-input-1">
                 <b-form-input
@@ -13,7 +17,7 @@
                 ></b-form-input>
 
                 <b-form-invalid-feedback id="input-1-live-feedback">
-                    Imię musi posiadać więcej niż 2 znaki
+                    Imię musi posiadać więcej niż 2 znaki i składać się z samych liter
                 </b-form-invalid-feedback>
             </b-form-group>
 
@@ -27,7 +31,7 @@
                 ></b-form-input>
 
                 <b-form-invalid-feedback id="input-2-live-feedback">
-                    Nazwisko musi posiadać więcej niż 3 znaki
+                    Nazwisko musi posiadać więcej niż 3 znaki i składać się z samych liter
                 </b-form-invalid-feedback>
             </b-form-group>
 
@@ -88,14 +92,16 @@
         name: "Reserve",
         data() {
             return {
-                room: this.$route.params.room,
+                roomNumber: this.$route.params.roomNumber,
+                dormName: this.$route.params.dormName,
                 form: {
                     name: '',
                     surname: '',
                     indexNumber: null,
                     email: '',
                     phone: null
-                }
+                },
+                response: null
             }
         },
         validations: {
@@ -124,8 +130,27 @@
         },
         methods: {
             onSubmit() {
-                postMessage()
-                // Form submit logic
+                let config = {
+                    responseType: JSON,
+                };
+                this.response = null;
+                let data = this.form;
+                data.dormName = this.dormName;
+                data.roomNumber = this.roomNumber;
+                this.$http.post('http://localhost/akademik/mailer.php', data, config).then(promise => {
+                    window.scrollTo(0, 0);
+                    this.response = promise.body;
+                    if (this.response.status) {
+                        setTimeout(() => this.$router.push("/"), 2000);
+                    }
+                });
+            },
+            resetForm() {
+                this.form.email = '';
+                this.form.indexNumber = null;
+                this.form.name = '';
+                this.form.surname = '';
+                this.form.phone = null;
             }
         }
     }

@@ -42,28 +42,29 @@
                         </a>
                     </template>
                 </div>
-                <div id="room-details" v-if="roomDetails!==null">
-                    <a href="" id="room-details-cross" v-on:click.prevent="roomDetails=null"><b>X</b></a>
-                    <h3>Informacje o pokoju nr {{ currentRoom }}:</h3>
-                    <div v-if="roomDetails!=='Kuchnia'">
-                        <ul>
-                            <li>Pojemność: {{ roomDetails.capacity }} os.</li>
-                            <li>Lodówka: {{ roomDetails.fridge=="1" ? 'JEST' : 'BRAK' }}</li>
-                            <li>Wspólna łazienka: {{ roomDetails.shared_bathroom ? 'TAK' : 'NIE' }}</li>
-                            <li>Wspólna kuchnia: {{ roomDetails.status ? 'TAK' : 'NIE' }}</li>
-                            <li><b>Cena: {{ roomDetails.capacity == "2" ? '555' : '735' }} zł / miesiąc</b></li>
-                        </ul>
-                        <router-link v-bind:to="'/rezerwacja/'+currentRoom"><a
-                                :aria-disabled="{'true': roomDetails.status==1}" class="btn mt-2" href="#"
-                                role="button"
-                                v-bind:class="{'btn-success':roomDetails.status==0, 'btn-danger disabled':roomDetails.status==1 }">
-                            {{ roomDetails.status=="1" ? 'Zarezerwowany' : 'Rezerwuj' }}</a>
-                        </router-link>
+                <transition mode="out-in" name="fade">
+                    <div id="room-details" v-if="roomDetails!==null">
+                        <a href="" id="room-details-cross" v-on:click.prevent="roomDetails=null"><b>X</b></a>
+                        <h3>Informacje o pokoju nr {{ currentRoom }}:</h3>
+                        <div v-if="roomDetails!=='Kuchnia'">
+                            <ul>
+                                <li>Pojemność: {{ roomDetails.capacity }} os.</li>
+                                <li>Lodówka: {{ roomDetails.fridge=="1" ? 'JEST' : 'BRAK' }}</li>
+                                <li>Wspólna łazienka: {{ roomDetails.shared_bathroom ? 'TAK' : 'NIE' }}</li>
+                                <li>Wspólna kuchnia: {{ roomDetails.status ? 'TAK' : 'NIE' }}</li>
+                                <li><b>Cena: {{ roomDetails.capacity == "2" ? '555' : '735' }} zł / miesiąc</b></li>
+                            </ul>
+                            <router-link :aria-disabled="{'true': roomDetails.status==1}" class="btn mt-2" role="button"
+                                         v-bind:class="{'btn-success':roomDetails.status==0, 'btn-danger disabled':roomDetails.status==1 }"
+                                         v-bind:to="'/rezerwacja/'+currentDorm.name+'/'+currentRoom">
+                                {{ roomDetails.status=="1" ? 'Zarezerwowany' : 'Rezerwuj' }}
+                            </router-link>
+                        </div>
+                        <div v-else>
+                            <h4>Kuchnia</h4>
+                        </div>
                     </div>
-                    <div v-else>
-                        <h4>Kuchnia</h4>
-                    </div>
-                </div>
+                </transition>
                 <img id="dorm-floor-img" src="../assets/floor.jpg"/>
             </div>
         </div>
@@ -76,9 +77,6 @@
     export default {
         name: "Dorm",
         methods: {
-            setDorm(dorm) {
-                this.currentDorm = dorm;
-            },
             getRooms() {
                 return this.Db.room.filter(room => room.floor_id == this.currentFloor)
             },
@@ -95,8 +93,9 @@
                 let room_details = this.Db.room_details.filter(room_details => room_details.room_id === room.id);
                 if (room_details.length !== 0) {
                     return room_details[0].status == 0;
-                } else
+                } else {
                     return false;
+                }
             }
         },
         data() {

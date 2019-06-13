@@ -1,20 +1,34 @@
 <template>
   <div id="app">
-    <router-view/>
+    <transition mode="out-in" name="fade">
+      <router-view/>
+    </transition>
   </div>
 </template>
 
 <script>
-  import Dorm from './components/Dorm'
   import Reserve from './components/Reserve'
-export default {
-  name: 'app',
-  components: [
-    Dorm,
-    Reserve
-  ]
-}
+  import Dorm from './components/Dorm'
+
+  export default {
+    components: {
+      Dorm,
+      Reserve
+    },
+    name: 'app'
+  }
 </script>
 
 <style>
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity 0.5s ease;
+  }
+
+  .fade-enter, .fade-leave-to {
+    opacity: 0;
+  }
+
+  .fade-leave, .fade-enter-to {
+    opacity: 1;
+  }
 </style>
