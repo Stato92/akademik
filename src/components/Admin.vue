@@ -1,6 +1,8 @@
 <template>
     <b-container>
-        <h2 class="text-center">Panel administratora</h2>
+        <div class="text-center" v-if="logged">
+            <h2>Panel administratora</h2>
+            <button class="btn-sm btn-primary " v-on:click="logged=false, userInput=''">Wyloguj się</button>
         <div id="dorm-select" v-if="currentDorm==null">
             <label class="m-2" for="select-floor"><h4>Wybierz Akademik:</h4></label>
             <select class="col-2 form-control form-control-sm" id="select-dorm" v-model="currentDorm">
@@ -27,7 +29,15 @@
                 </div>
             </template>
         </div>
-
+        </div>
+        <div class="text-center" v-else>
+            <b-form-group>
+                <label for="password">Wpisz hasło:</label>
+                <div class="text-center">
+                    <b-form-input id="password" type="password" v-model.lazy="userInput"></b-form-input>
+                </div>
+            </b-form-group>
+        </div>
     </b-container>
 </template>
 
@@ -41,7 +51,10 @@
                 Db,
                 currentDorm: null,
                 currentFloor: null,
-                rooms: null
+                rooms: null,
+                logged: false,
+                password: 'haslo123',
+                userInput: ''
             }
         },
         watch: {
@@ -50,8 +63,18 @@
             },
             rooms() {
                 this.rooms.forEach(room => {
-                    Db.room_details.room
-                })
+                    this.Db.room_details.forEach(function (room_detail, index) {
+                            if (room_detail.room_id === room.id) {
+                                Db.room_details[index] = room.roomDetails;
+                            }
+                        }
+                    ), this
+                }), this;
+            },
+            userInput() {
+                if (this.userInput === this.password) {
+                    this.logged = true;
+                }
             }
         },
         methods: {

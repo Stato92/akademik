@@ -19,13 +19,18 @@
                     <button class="btn btn-primary btn-sm" v-else>Mniej informacji</button>
                 </p>
             </a>
-            <ul class="text-left" v-if="showDormInfo">
-                <li>adres: {{ currentDorm.address }}</li>
-                <li>opis: {{ currentDorm.description }}</li>
-                <li>email: <a v-bind:href="'mailto:'+currentDorm.email">{{ currentDorm.email }}</a></li>
-                <li>telefon: {{ currentDorm.phone }}</li>
-                <img class="align-self-center" v-bind:src="currentDorm.img" width="600px">
-            </ul>
+            <transition enter-active-class="animated fadeInUp"
+                        leave-active-class="animated fadeOutDown"
+                        name="custom-transition"
+            >
+                <ul class="text-left" v-if="showDormInfo">
+                    <li>adres: {{ currentDorm.address }}</li>
+                    <li>opis: {{ currentDorm.description }}</li>
+                    <li>email: <a v-bind:href="'mailto:'+currentDorm.email">{{ currentDorm.email }}</a></li>
+                    <li>telefon: {{ currentDorm.phone }}</li>
+                    <img class="align-self-center" v-bind:src="currentDorm.img" width="600px">
+                </ul>
+            </transition>
             <label for="select-floor"><h4>Wybierz piętro:</h4></label>
             <select class="align-self-center col-2 form-control form-control-sm" id="select-floor"
                     v-model="currentFloor">
@@ -113,6 +118,20 @@
 </script>
 
 <style scoped>
+    .slide-fade-enter-active {
+        transition: all .3s ease;
+    }
+
+    .slide-fade-leave-active {
+        transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+    }
+
+    .slide-fade-enter, .slide-fade-leave-to
+        /* .slide-fade-leave-active below version 2.1.8 */
+    {
+        transform: translateY(50px);
+        opacity: 0;
+    }
     a:link, a:visited {
         text-decoration: none;
         color: black;

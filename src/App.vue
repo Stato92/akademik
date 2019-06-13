@@ -1,5 +1,13 @@
 <template>
   <div id="app">
+    <ul class="text-center">
+      <li>
+        <router-link to="/">Strona główna</router-link>
+      </li>
+      <li>
+        <router-link to="/Admin">Admin</router-link>
+      </li>
+    </ul>
     <transition mode="out-in" name="fade">
       <router-view/>
     </transition>
